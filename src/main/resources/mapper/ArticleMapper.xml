@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kz.coderscircle.mapper.ArticleMapper">
+
+    <select id="list" resultType="com.kz.coderscircle.pojo.Article">
+        SELECT
+        a.*,
+        c.category_name
+        FROM
+        article a
+        LEFT JOIN
+        category c ON a.category_id = c.id
+        <where>
+            <if test="categoryId != null">
+                AND a.category_id = #{categoryId}
+            </if>
+            <if test="state != null and state != ''">
+                AND a.state = #{state}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') OR a.content LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY
+        a.create_time DESC
+    </select>
+
+    <select id="myList" resultType="com.kz.coderscircle.pojo.Article">
+        SELECT
+        a.*,
+        c.category_name
+        FROM
+        article a
+        LEFT JOIN
+        category c ON a.category_id = c.id
+        <where>
+            a.create_user = #{userId}
+            <if test="categoryId != null">
+                AND a.category_id = #{categoryId}
+            </if>
+            <if test="state != null and state != ''">
+                AND a.state = #{state}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (a.title LIKE CONCAT('%', #{keyword}, '%') OR a.content LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY
+        a.update_time DESC
+    </select>
+
+    <update id="incrementLikeCount">
+        UPDATE article SET like_count = like_count + 1 WHERE id = #{articleId}
+    </update>
+
+    <update id="decrementLikeCount">
+        UPDATE article SET like_count = like_count - 1 WHERE id = #{articleId} AND like_count > 0
+    </update>
+
+</mapper>

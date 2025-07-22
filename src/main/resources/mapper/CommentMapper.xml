@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kz.coderscircle.mapper.CommentMapper">
+
+    <select id="selectWithUserInfo" resultType="com.kz.coderscircle.pojo.Comment">
+        SELECT
+            c.*,
+            u.nickname,
+            u.user_pic
+        FROM
+            comment c
+                LEFT JOIN
+            user u ON c.create_user = u.id
+        WHERE
+            c.article_id = #{articleId}
+        ORDER BY
+            c.create_time ASC
+    </select>
+
+</mapper>
